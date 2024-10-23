@@ -14,7 +14,7 @@ import SigninForm from "./components/SigninForm/SigninForm.jsx";
 import HootDetails from "./components/HootDetails/HootDetails.jsx";
 import "./App.css";
 export const AuthedUserContext = createContext(null);
-//added delete  
+//added delete to front end
 function App() {
   const [user, setUser] = useState(null);
 
