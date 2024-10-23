@@ -10,6 +10,10 @@ function NavBar({ handleSignout }) {
       <li>
         <Link to="/">Home</Link>
       </li>
+
+      <li>
+        <Link to="/hoots/new">NEW HOOT</Link>
+      </li>
     </>
   );
 
