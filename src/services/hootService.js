@@ -1,7 +1,9 @@
-const create = async (hootFormData) => {
+// src/services/hootService.js
+
+async function update(hootId, hootFormData) {
   try {
-    const res = await fetch(BASE_URL, {
-      method: 'POST',
+    const res = await fetch(`${BASE_URL}/${hootId}`, {
+      method: 'PUT',
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json',
@@ -12,6 +14,14 @@ const create = async (hootFormData) => {
   } catch (error) {
     console.log(error);
   }
-};
+}
 
-export { index, show, create };
+export {
+  index,
+  show,
+  create,
+  createComment,
+  deleteHoot,
+  // As always, remember to export:
+  update,
+};
