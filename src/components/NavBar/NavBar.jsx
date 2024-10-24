@@ -1,48 +1,29 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
-import { AuthedUserContext } from "../App.jsx";
+import { AuthedUserContext } from "../../App.jsx";
 
 function NavBar({ handleSignout }) {
   const user = useContext(AuthedUserContext);
 
-  const alwaysOption = (
-    <>
-      <li>
-        <Link to="/">Home</Link>
-      </li>
-    </>
-  );
-
   const authorizedOptions = (
-    <>
-      <li>
-        <Link to="" onClick={handleSignout}>
-          Sign Out
-        </Link>
-      </li>
-    </>
+    <ul>
+      <li><Link to='/'>HOME</Link></li>
+      <li><Link to='/hoots'>HOOTS</Link></li>
+      <li><Link to='' onClick={handleSignout}>SIGN OUT</Link></li>
+    </ul>
   );
 
   const unauthorizedOptions = (
-    <>
-      <li>
-        <Link to="/signin">Sign In</Link>
-      </li>
-      <li>
-        <Link to="/signup">Sign Up</Link>
-      </li>
-    </>
+    <ul>
+      <li><Link to="/signin">Sign In</Link></li>
+      <li><Link to="/signup">Sign Up</Link></li>
+    </ul>
   );
 
   return (
-    <>
-      <nav>
-        <ul>
-          {alwaysOption}
-          {user ? authorizedOptions : unauthorizedOptions}
-        </ul>
-      </nav>
-    </>
+    <nav>
+      {user ? authorizedOptions : unauthorizedOptions}
+    </nav>
   );
 }
 
