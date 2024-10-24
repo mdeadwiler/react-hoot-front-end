@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import * as hootService from '../../services/hootService';
+import * as hootService from '../services/hootService';
 
 const HootForm = (props) => {
   const [formData, setFormData] = useState({

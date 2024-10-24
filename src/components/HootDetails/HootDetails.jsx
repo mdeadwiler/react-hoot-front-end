@@ -40,7 +40,9 @@ if (!hoot) return <main>Loading...</main>;
       </header>
       <p>{hoot.text}</p>
       <section>
+
         <h2>Comments</h2>
+        <CommentForm />
         {!hoot.comments.length && <p>There are no comments.</p>}
 
         {hoot.comments.map((comment) => (

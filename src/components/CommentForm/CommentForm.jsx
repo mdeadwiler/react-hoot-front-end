@@ -1,16 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import * as hootService from '../services/hootService';
 
-import * as hootService from '../../services/hootService';
 
 const CommentForm = (props) => {
   const [formData, setFormData] = useState({ text: '' });
-
+  
   const handleChange = (evt) => {
     setFormData({ ...formData, [evt.target.name]: evt.target.value });
   };
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
+    try {
+      hootService.createComment(props.hootId, formData);
+    } catch (error) {
+      console.log(error);
+    }
     props.handleAddComment(formData)
     setFormData({ text: '' });
   };
