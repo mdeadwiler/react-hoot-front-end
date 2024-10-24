@@ -1,9 +1,49 @@
+
 // src/components/HootDetails/HootDetails.jsx
 import { Link } from 'react-router-dom';
+import { AuthedUserContext } from "../../App";
+import { useState, useEffect, useContext } from "react";
+import CommentForm from '../CommentForm/CommentForm';
 
-{hoot.author._id === user._id && (
+
+
+const HootDetails = props => {
+  const [hoot, setHoot] = useState(null);
+  const user = useContext(AuthedUserContext);
+
+  const handleAddComment = async (commentFormData) => {
+  const newComment = await hootService.createComment(hootId, commentFormData);
+  setHoot({ ...hoot, comments: [...hoot.comments, newComment] });
+};
+
+
+   return (
+    <head>
+  <>
+<h2>Comments</h2>
+    
+<CommentForm handleAddComment={handleAddComment} />
+</>
+      <p>
+        {hoot.category.toUpperCase()}
+      </p>
+      <h1>
+        {hoot.title}
+      </h1>
+      <p>
+        {hoot.author.username} posted on{" "}
+        {new Date(hoot.createdAt).toLocaleDataString()}
+      </p>
+  {hoot.author._id === user._id && (
     <>
     <Link to={`/hoots/${hootId}/edit`}>Edit</Link>
     <button onClick={() => props.handleDeleteHoot(hootId)}>Delete</button>
     </>
 )}
+     </head>
+  );
+};
+
+
+export default HootDetails;
+
