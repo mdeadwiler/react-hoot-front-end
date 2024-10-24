@@ -1,18 +1,19 @@
 import { useState, useEffect, createContext } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import { signup, signin, signout, getUser } from "./components/services/authService.js"
-import { Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar/NavBar.jsx";
 import Landing from "./components/Landing/Landing.jsx";
 import Dashboard from "./components/Dashboard/Dashboard.jsx";
 import SignupForm from "./components/SignupForm/SignupForm.jsx";
 import SigninForm from "./components/SigninForm/SigninForm.jsx";
-import HootDetails from "./components/HootDetails/HootDetails.jsx";
+import HootDetails from "./components/HootDetails/HootDetails";
 import "./App.css";
-
+export const AuthedUserContext = createContext(null);
 //added delete to front end
 
 function App() {
   const [user, setUser] = useState(null);
+  const [hoots, setHoots] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,15 +25,22 @@ function App() {
     signout();
     setUser(null);
   };
+//This is updated
+const handleUpdateHoot = async (hootId, hootFormData) => {
+  const updatedHoot = await hootService.update(hootId, hootFormData);
 
+  setHoots(hoots.map((hoot) => (hootId === hoot._id ? updatedHoot : hoot)));
 
-  const handleAddHoot = async (hootFormData) => {
+  navigate(`/hoots/${hootId}`);
+};
+  //This is addHoot
+const handleAddHoot = async (hootFormData) => {
   const newHoot = await hootService.create(hootFormData);
   setHoots([newHoot, ...hoots]);
   navigate('/hoots');
 };
 
-  ///handle delete function
+  //handle delete function
   const handleDeleteHoot = async hootId => {
     //////// console.log("hootId", hootId);
     const deletedHoot = await hootService.deletedHoot(hootId);
@@ -40,6 +48,7 @@ function App() {
     setHoots(hoots.filter(hoot => hoot._id !== deletedHoot._id));
     navigate("/hoots");
   };
+
   return (
     <AuthedUserContext.Provider value={user}>
       <NavBar handleSignout={handleSignout} />
@@ -50,7 +59,17 @@ function App() {
         <Route path="/signup" element={<SignupForm setUser={setUser} />} />
         <Route path="/signin" element={<SigninForm setUser={setUser} />} />
 
-        <Route path="/hoots/new" element={<HootForm handleAddHoot={handleAddHoot} />} />
+        <Route
+          path="/hoots/new"
+          element={<HootForm handleAddHoot={handleAddHoot} />}
+        />
+        <Route
+          path="/hoots/:hootId/edit"
+          element={<HootForm handleUpdateHoot={handleUpdateHoot} />}
+        />
+        <Route path="/hoots/:hootsId" element={<HootDetails />} />
+   
+      <Route path="/hoots/new" element={<HootForm handleAddHoot={handleAddHoot} />} />
 
         <Route
           path="/hoots/:hootId"
@@ -60,5 +79,5 @@ function App() {
     </AuthedUserContext.Provider>
   );
 }
-export const AuthedUserContext = createContext(null);
+
 export default App;

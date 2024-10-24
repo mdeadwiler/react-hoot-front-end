@@ -1,7 +1,9 @@
+
+// src/components/HootDetails/HootDetails.jsx
+import { Link } from 'react-router-dom';
 import { AuthedUserContext } from "../../App";
 import { useState, useEffect, useContext } from "react";
 import CommentForm from '../CommentForm/CommentForm';
-
 
 
 
@@ -15,10 +17,7 @@ const HootDetails = props => {
 };
 
 
-  
-  
-  
-  return (
+   return (
     <head>
   <>
 <h2>Comments</h2>
@@ -35,17 +34,16 @@ const HootDetails = props => {
         {hoot.author.username} posted on{" "}
         {new Date(hoot.createdAt).toLocaleDataString()}
       </p>
-
-      {hoot.author._id === user._id && (
-        <>
-        <button onClick={() => props.handleDeleteHoot(hootId)}>Delete</button>
-
-        </>
-      )}
-
-    </head>
+  {hoot.author._id === user._id && (
+    <>
+    <Link to={`/hoots/${hootId}/edit`}>Edit</Link>
+    <button onClick={() => props.handleDeleteHoot(hootId)}>Delete</button>
+    </>
+)}
+     </head>
   );
 };
 
 
 export default HootDetails;
+
