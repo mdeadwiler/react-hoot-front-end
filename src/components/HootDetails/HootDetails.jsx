@@ -1,12 +1,30 @@
 import { AuthedUserContext } from "../../App";
 import { useState, useEffect, useContext } from "react";
+import CommentForm from '../CommentForm/CommentForm';
+
+
+
 
 const HootDetails = props => {
   const [hoot, setHoot] = useState(null);
   const user = useContext(AuthedUserContext);
 
+  const handleAddComment = async (commentFormData) => {
+  const newComment = await hootService.createComment(hootId, commentFormData);
+  setHoot({ ...hoot, comments: [...hoot.comments, newComment] });
+};
+
+
+  
+  
+  
   return (
     <head>
+  <>
+<h2>Comments</h2>
+    
+<CommentForm handleAddComment={handleAddComment} />
+</>
       <p>
         {hoot.category.toUpperCase()}
       </p>
@@ -18,8 +36,6 @@ const HootDetails = props => {
         {new Date(hoot.createdAt).toLocaleDataString()}
       </p>
 
-      {/* // Add the following code below the p tag */}
-
       {hoot.author._id === user._id && (
         <>
         <button onClick={() => props.handleDeleteHoot(hootId)}>Delete</button>
@@ -30,5 +46,6 @@ const HootDetails = props => {
     </head>
   );
 };
+
 
 export default HootDetails;
