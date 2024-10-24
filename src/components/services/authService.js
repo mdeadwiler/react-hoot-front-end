@@ -44,3 +44,11 @@ export const getUser = () =>  {
 export const signout = () => {
   localStorage.removeItem('token');
 };
+
+export default {
+  signup,
+  signin,
+  signout,
+  getUser
+};
+

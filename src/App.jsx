@@ -1,12 +1,15 @@
+import HootDetails from './components/HootDetails/HootDetails';
+import HootList from './components/HootList/HootList';
+import HootForm from './components/HootForm/HootForm.jsx';
+import * as hootService from './components/services/hootService';
 import { useState, useEffect, createContext } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { signup, signin, signout, getUser } from "./components/services/authService.js"
+import signout from "./components/services/authService.js"
 import NavBar from "./components/NavBar/NavBar.jsx";
 import Landing from "./components/Landing/Landing.jsx";
 import Dashboard from "./components/Dashboard/Dashboard.jsx";
 import SignupForm from "./components/SignupForm/SignupForm.jsx";
 import SigninForm from "./components/SigninForm/SigninForm.jsx";
-import HootDetails from "./components/HootDetails/HootDetails";
 import "./App.css";
 export const AuthedUserContext = createContext(null);
 //added delete to front end
@@ -17,9 +20,14 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const userData = getUser();
-    setUser(userData);
-  }, []);
+    const fetchAllHoots = async () => {
+      const hootsData = await hootService.index();
+      // setting state to hootsData
+      setHoots(hootsData);
+    };
+    if (user) fetchAllHoots();
+  }, [user]);
+  
 
   const handleSignout = () => {
     signout();
@@ -52,6 +60,7 @@ const handleAddHoot = async (hootFormData) => {
   return (
     <AuthedUserContext.Provider value={user}>
       <NavBar handleSignout={handleSignout} />
+
       <Routes>
         {user
           ? <Route path="/" element={<Dashboard />} />
@@ -76,6 +85,25 @@ const handleAddHoot = async (hootFormData) => {
           element={<HootDetails handleDeleteHoot={handleDeleteHoot} />}
         />
     </Routes>
+
+      <h1>Welcome to Hoot Hoot</h1>
+
+<Routes>
+  {user ? (
+    // Protected Routes:
+    <>
+      <Route path="/" element={<Dashboard user={user} />} />
+      <Route path="/hoots" element={<HootList />} />
+      <Route path="/hoots/:hootId" element={<HootDetails />} />
+    </>
+  ) : (
+    // Public Route:
+    <Route path="/" element={<Landing />} />
+  )}
+  <Route path="/signup" element={<SignupForm setUser={setUser} />} />
+  <Route path="/signin" element={<SigninForm setUser={setUser} />} />
+</Routes>
+
     </AuthedUserContext.Provider>
   );
 }

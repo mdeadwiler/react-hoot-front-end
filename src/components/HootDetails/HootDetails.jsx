@@ -1,29 +1,63 @@
-
 // src/components/HootDetails/HootDetails.jsx
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { AuthedUserContext } from "../../App";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext} from "react";
 import CommentForm from '../CommentForm/CommentForm';
+import * as hootService from '../services/hootService';
 
 
 
-const HootDetails = props => {
+const HootDetails = (props) => {
   const [hoot, setHoot] = useState(null);
-  const user = useContext(AuthedUserContext);
+  const { hootId } = useParams();
+const user = useContext(AuthedUserContext);
 
+  useEffect(() => {
+    const fetchHoot = async () => {
+      const hootData = await hootService.show(hootId);
+      setHoot(hootData);
+    };
+    fetchHoot();
+  }, [hootId]);
   const handleAddComment = async (commentFormData) => {
   const newComment = await hootService.createComment(hootId, commentFormData);
   setHoot({ ...hoot, comments: [...hoot.comments, newComment] });
 };
 
 
-   return (
-    <head>
-  <>
-<h2>Comments</h2>
-    
+  
+if (!hoot) return <main>Loading...</main>;
+  return (
+   
+    <main>
+      <header>
+        <p>{hoot.category.toUpperCase()}</p>
+        <h1>{hoot.title}</h1>
+        <p>
+          {hoot.author.username} posted on
+          {new Date(hoot.createdAt).toLocaleDateString()}
+        </p>
+      </header>
+      <p>{hoot.text}</p>
+      <section>
+        <h2>Comments</h2>
+        {!hoot.comments.length && <p>There are no comments.</p>}
+
+        {hoot.comments.map((comment) => (
+          <article key={comment._id}>
+            <header>
+              <p>
+                {comment.author.username} posted on
+                {new Date(comment.createdAt).toLocaleDateString()}
+              </p>
+            </header>
+            <p>{comment.text}</p>
+            
+          </article>
+        ))}
+
 <CommentForm handleAddComment={handleAddComment} />
-</>
+
       <p>
         {hoot.category.toUpperCase()}
       </p>
@@ -38,12 +72,14 @@ const HootDetails = props => {
     <>
     <Link to={`/hoots/${hootId}/edit`}>Edit</Link>
     <button onClick={() => props.handleDeleteHoot(hootId)}>Delete</button>
-    </>
+   </> 
 )}
-     </head>
+      </section>
+
+      
+    </main>
+    
   );
 };
-
-
 export default HootDetails;
 
